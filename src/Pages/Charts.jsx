@@ -30,6 +30,7 @@ function Charts({ expenses = [] }) {
 
   // MONTHLY DATA
   const monthlyData = {};
+
   // Converts date into month name:
   expenses.forEach((exp) => {
     const month = new Date(exp.date).toLocaleString("default", {
@@ -42,16 +43,19 @@ function Charts({ expenses = [] }) {
       monthlyData[month] = Number(exp.amount);
     }
   });
-  //YHA HAMLOG ARRAY BNA RHE HAI KYUKI OBJECTS ME .MAP USE NHI HOOTA HAI
+
+  // YHA HAMLOG ARRAY BNA RHE HAI KYUKI OBJECTS ME .MAP USE NHI HOOTA HAI
   const monthlyArray = Object.keys(monthlyData).map((key) => ({
     month: key,
     amount: monthlyData[key],
   }));
 
-  //FOR WEEKLY DATA
+  // FOR DAILY DATA
   const dailyData = {};
+
   expenses.forEach((exp) => {
     const date = new Date(exp.date).getDate();
+
     if (dailyData[date]) {
       dailyData[date] += Number(exp.amount);
     } else {
@@ -59,7 +63,7 @@ function Charts({ expenses = [] }) {
     }
   });
 
-  //now to convert it into array
+  // now to convert it into array
   const dailyArray = Object.keys(dailyData).map((key) => ({
     day: key,
     amount: dailyData[key],
@@ -69,60 +73,91 @@ function Charts({ expenses = [] }) {
     Food: "#FF6384",
     Travel: "#36A2EB",
     Shopping: "#FFCE56",
+    Health: "#2ECC71",
+    Bills: "#E67E22",
     Other: "#8E44AD",
+
   };
-  const cardStyle = {
-    background: "#fff",
-    padding: "20px",
-    borderRadius: "12px",
-    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-    textAlign: "center",
-  };
+
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>📊 Expense Charts</h2>
+    <div className="min-h-screen bg-gray-100 p-6">
+      
+      {/* PAGE HEADING */}
+      <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">
+        📊 Expense Analytics
+      </h2>
 
-      {/* PIE CHART */}
-      {/* DATAKEY VALUE HSI KYUKI VALUE KEY SE HI DIFFERENTIATE KRENGE */}
-      <div style={cardStyle}>
-        <h3 style={{ marginBottom: "10px" }}>Category Wise</h3>
+      {/* GRID CONTAINER */}
+      {/* md:grid-cols-2 => medium screen pr 2 columns */}
+      {/* lg:grid-cols-3 => large screen pr 3 columns */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <PieChart width={300} height={300}>
-          <Pie data={categoryArray} dataKey="value" outerRadius={100}>
-            {categoryArray.map((cat, index) => (
-              // 👉 Adds different colors to slices */
-              <Cell key={index} fill={categoryColors[cat.name] || "#8884d8"} />
-            ))}
-          </Pie>
-          {/* 👉 Shows values on hover */}
-          <Tooltip />
-        </PieChart>
-      </div>
+        {/* PIE CHART */}
+        {/* DATAKEY VALUE HSI KYUKI VALUE KEY SE HI DIFFERENTIATE KRENGE */}
+        <div className="bg-white rounded-2xl shadow-md p-5 hover:shadow-lg transition duration-300">
+          
+          <h3 className="text-lg font-semibold text-gray-700 mb-4 text-center">
+            Category Wise
+          </h3>
 
-      {/* BAR CHART */}
-      <div style={cardStyle}>
-        <h3 style={{ marginBottom: "10px" }}>Monthly Spending</h3>
+          <div className="flex justify-center">
+            <PieChart width={300} height={300}>
+              <Pie data={categoryArray} dataKey="value" outerRadius={100}>
+                
+                {categoryArray.map((cat, index) => (
+                  // 👉 Adds different colors to slices
+                  <Cell
+                    key={index}
+                    fill={categoryColors[cat.name] || "#8884d8"}
+                  />
+                ))}
 
-        <BarChart width={400} height={300} data={monthlyArray}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip />
-          <Bar dataKey="amount" fill="#36A2EB" />
-        </BarChart>
-      </div>
+              </Pie>
 
-      {/* bar chart 2 */}
-      <div style={cardStyle}>
-        <h3 style={{ marginBottom: "10px" }}>Daily Spending</h3>
+              {/* 👉 Shows values on hover */}
+              <Tooltip />
+            </PieChart>
+          </div>
+        </div>
 
-        <BarChart width={400} height={300} data={dailyArray}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="day" />
-          <YAxis />
-          <Tooltip />
-          <Bar dataKey="amount" fill="#FF6384" />
-        </BarChart>
+        {/* BAR CHART */}
+        <div className="bg-white rounded-2xl shadow-md p-5 hover:shadow-lg transition duration-300">
+          
+          <h3 className="text-lg font-semibold text-gray-700 mb-4 text-center">
+            Monthly Spending
+          </h3>
+
+          <div className="flex justify-center overflow-x-auto">
+            <BarChart width={400} height={300} data={monthlyArray}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+
+              <Bar dataKey="amount" fill="#36A2EB" />
+            </BarChart>
+          </div>
+        </div>
+
+        {/* BAR CHART 2 */}
+        <div className="bg-white rounded-2xl shadow-md p-5 hover:shadow-lg transition duration-300">
+          
+          <h3 className="text-lg font-semibold text-gray-700 mb-4 text-center">
+            Daily Spending
+          </h3>
+
+          <div className="flex justify-center overflow-x-auto">
+            <BarChart width={400} height={300} data={dailyArray}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="day" />
+              <YAxis />
+              <Tooltip />
+
+              <Bar dataKey="amount" fill="#FF6384" />
+            </BarChart>
+          </div>
+        </div>
+
       </div>
     </div>
   );
